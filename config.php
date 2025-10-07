@@ -1,44 +1,26 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+if (session_status() == PHP_SESSION_NONE) session_start();
 
 // Paths
-if (!defined('BASE_PATH')) define('BASE_PATH', realpath(__DIR__) . '/');
-$base_url = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== '') 
-    ? "http://{$_SERVER['HTTP_HOST']}/foodmanagementsystem/" 
-    : 'http://localhost/foodmanagementsystem/';
+define('BASE_PATH', realpath(__DIR__) . '/');
+$base_url = "http://54.252.186.134/foodmanagementsystem/";
 
-// Autoload Composer
+// Composer
 require_once BASE_PATH . 'vendor/autoload.php';
 use MongoDB\Client;
 
-// Singleton Database for MongoDB Atlas
+// MongoDB Atlas Singleton
 class Database {
     private static $instance = null;
-    private $client;
     private $db;
 
     private function __construct() {
-        // Replace <db_username> and <db_password> with your actual credentials
-        $username = "n12371661"; 
-        $password = "n12371661admin"; 
-        $dbname   = "foodmanagement";
-        $cluster  = "foodmanagement.jrd7lmt.mongodb.net";
-
-        // Encode username/password in case of special characters
-        $username = urlencode($username);
-        $password = urlencode($password);
-
         $uri = "mongodb+srv://n12371661:n12371661admin@foodmanagement.jrd7lmt.mongodb.net/foodmanagement?retryWrites=true&w=majority";
-        $client = new MongoDB\Client($uri);
-        $db = $client->foodmanagement; // your database name
-
         try {
-            $this->client = new Client($uri);
-            $this->db = $this->client->$dbname;
+            $client = new Client($uri);
+            $this->db = $client->foodmanagement;
         } catch (Exception $e) {
-            die("MongoDB Atlas Connection Failed: " . $e->getMessage());
+            die("MongoDB Connection Failed: " . $e->getMessage());
         }
     }
 
@@ -50,7 +32,7 @@ class Database {
     public function getDB() { return $this->db; }
 }
 
-// Singleton App Config
+// App Config
 class AppConfig {
     private static $instance = null;
     public $settings;
@@ -65,6 +47,5 @@ class AppConfig {
     }
 }
 
-// Get database instance
 $db = Database::getInstance()->getDB();
 $config = AppConfig::getInstance();
