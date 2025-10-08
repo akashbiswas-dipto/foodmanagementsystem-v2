@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) session_start();
 
 // Paths
 define('BASE_PATH', realpath(__DIR__) . '/');
-$base_url = "http://54.252.186.134/foodmanagementsystem/";
+$base_url = "http://13.210.70.74/foodmanagementsystem/";
 
 // Composer
 require_once BASE_PATH . 'vendor/autoload.php';
