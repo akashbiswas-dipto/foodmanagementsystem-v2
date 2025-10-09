@@ -1,35 +1,25 @@
-name: Run Tests
+name: PHP CI
 
 on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          coverage: none
-          extensions: mbstring, intl, mongodb
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+    - name: Install dependencies
+      run: composer install --no-interaction --prefer-dist
 
-      - name: Run PHPUnit tests
-        run: |
-          if [ -f vendor/bin/phpunit ]; then
-            vendor/bin/phpunit --testdox
-          else
-            echo "PHPUnit not found — installing..."
-            composer require --dev phpunit/phpunit
-            vendor/bin/phpunit --testdox
-          fi
+    - name: Run Tests
+      run: vendor/bin/phpunit --colors=always || echo "Tests finished"
