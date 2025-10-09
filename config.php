@@ -1,6 +1,13 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) session_start();
-require_once 'hosttype.php';
+
+// Define base path if not defined
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', __DIR__ . '/');
+}
+
+// Load hosttype and Composer autoload
+require_once BASE_PATH . 'hosttype.php';
 require_once BASE_PATH . 'vendor/autoload.php';
 
 use MongoDB\Client;
@@ -12,18 +19,19 @@ class Database {
     private $db;
 
     private function __construct() {
-        // MongoDB Atlas connection
         $uri = "mongodb+srv://n12371661:n12371661admin@foodmanagement.jrd7lmt.mongodb.net/foodmanagement?retryWrites=true&w=majority";
         try {
             $client = new Client($uri);
             $this->db = $client->foodmanagement; // Database name
-        } catch (Exception $e) {
+        } catch (\MongoDB\Driver\Exception\Exception $e) {
             die("MongoDB Connection Failed: " . $e->getMessage());
         }
     }
 
     public static function getInstance(): Database {
-        if (!self::$instance) self::$instance = new Database();
+        if (!self::$instance) {
+            self::$instance = new Database();
+        }
         return self::$instance;
     }
 
@@ -32,10 +40,10 @@ class Database {
     }
 }
 
-// Make $db globally accessible
+// Global MongoDB instance
 $db = Database::getInstance()->getDB();
 
-// ---------------- Optional App Config ----------------
+// ---------------- App Configuration Singleton ----------------
 class AppConfig {
     private static ?AppConfig $instance = null;
     public array $settings;
@@ -48,9 +56,12 @@ class AppConfig {
     }
 
     public static function getInstance(): AppConfig {
-        if (!self::$instance) self::$instance = new AppConfig();
+        if (!self::$instance) {
+            self::$instance = new AppConfig();
+        }
         return self::$instance;
     }
 }
 
+// Global app configuration
 $config = AppConfig::getInstance();
