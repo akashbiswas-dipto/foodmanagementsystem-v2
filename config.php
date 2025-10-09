@@ -7,7 +7,7 @@ if (!defined('BASE_PATH')) {
 }
 
 // Load hosttype and Composer autoload
-require_once BASE_PATH . 'hosttype.php';
+require_once 'hosttype.php';
 require_once BASE_PATH . 'vendor/autoload.php';
 
 use MongoDB\Client;
