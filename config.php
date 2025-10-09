@@ -1,12 +1,19 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) session_start();
 
+// Define base path only once
 if (!defined('BASE_PATH')) {
     define('BASE_PATH', __DIR__ . '/');
 }
 
-require_once 'hosttype.php';
+// Load Composer autoloader
 require_once BASE_PATH . 'vendor/autoload.php';
+
+// Load environment variables from .env if available
+if (file_exists(BASE_PATH . '.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
+    $dotenv->load();
+}
 
 use MongoDB\Client;
 use MongoDB\BSON\ObjectId;
@@ -16,7 +23,10 @@ class Database {
     private $db;
 
     private function __construct() {
-        $uri = "mongodb+srv://n12371661:n12371661admin@foodmanagement.jrd7lmt.mongodb.net/foodmanagement?retryWrites=true&w=majority";
+        // Get MongoDB URI from environment variable or fallback
+        $uri = $_ENV['MONGO_URI'] ?? getenv('MONGO_URI') ?? 
+               'mongodb+srv://n12371661:n12371661admin@foodmanagement.jrd7lmt.mongodb.net/foodmanagement?retryWrites=true&w=majority';
+
         try {
             $client = new Client($uri);
             $this->db = $client->foodmanagement; // Database name
@@ -46,7 +56,10 @@ class AppConfig {
     private function __construct() {
         $this->settings = [
             'app_name' => 'FoodManagementSystem',
-            'mongodb_uri' => 'mongodb+srv://n12371661:n12371661admin@foodmanagement.jrd7lmt.mongodb.net/foodmanagement'
+            'mongodb_uri' => $_ENV['MONGO_URI'] ?? getenv('MONGO_URI') ?? 
+                             'mongodb+srv://n12371661:n12371661admin@foodmanagement.jrd7lmt.mongodb.net/foodmanagement',
+            'jwt_secret' => $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET') ?? 'default_secret',
+            'port' => $_ENV['PORT'] ?? getenv('PORT') ?? '5001'
         ];
     }
 
