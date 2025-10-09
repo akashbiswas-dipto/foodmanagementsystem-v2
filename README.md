@@ -1,45 +1,145 @@
-# Food Management System
+FoodManagementSystem
 
-A simple PHP + MongoDB based food management system for Donors and NGOs.  
-It allows Donors to share meals and NGOs to request meals, with role-based access control and notifications.
+FoodManagementSystem is a PHP-based web application for managing food-related operations, using MongoDB as the database. The system is designed to run on Ubuntu servers with Apache2 and PHP 8+, but can also run locally on Windows or Mac using XAMPP or MAMP.
 
----
+Table of Contents
 
-## Features
+Project Overview
 
-- Donor and NGO authentication
-- Donors can share and update food items
-- NGOs can request food items
-- Request approval workflow
-- Role-based access using middleware and proxy design pattern
-- Notifications implemented with Observer pattern
+Technologies Used
 
----
+Project Structure
 
-## Technologies Used
+Prerequisites
 
-- PHP 8.x
-- MongoDB
-- Composer for dependencies
-- Bootstrap 5 for frontend
-- Design patterns: Observer, Proxy, Chain, decorator, facade, factory, strategy
+Installation & Setup (Server)
 
----
+Apache Configuration
 
-## Prerequisites
+MongoDB Configuration
 
-- PHP 8.x installed
-- Composer installed
-- MongoDB server running
-- XAMPP / WAMP / LAMP for local development
-- Git (optional)
+Running the Application
 
----
+Running Locally (Windows / Mac)
 
-## Setup Instructions
+Updating the Project
 
-1. **Clone the repository**
+Development Workflow
 
-```bash
-git clone https://github.com/akashbiswas-dipto/foodmanagementsystemv2.git
-cd foodmanagementsystem
+Notes
+
+Project Overview
+
+The FoodManagementSystem is a web platform for managing food operations. It allows CRUD operations with MongoDB and provides a structured environment for managing food data efficiently.
+
+Technologies Used
+
+Backend: PHP 8+
+
+Database: MongoDB (Atlas)
+
+Server: Apache2
+
+Dependency Management: Composer
+
+Version Control: Git & GitHub
+
+Project Structure
+
+foodmanagementsystem-v2/
+├── foodmanagementsystem/
+│ ├── public/ - Web entry point (index.php)
+│ ├── src/ - Controllers, models, and business logic
+│ ├── vendor/ - Composer dependencies
+│ ├── config.php - App config & DB connection
+│ └── hosttype.php - BASE_URL and BASE_PATH definitions
+├── README.txt
+└── .gitignore
+
+Prerequisites
+
+Server:
+
+Ubuntu 20.04+ with Apache2
+
+PHP 8+ with mongodb, curl, json, mbstring extensions
+
+Composer installed
+
+Database: MongoDB Atlas account and credentials
+
+Local Development (optional):
+
+XAMPP (Windows) or MAMP (Mac)
+
+PHP 8+ included in XAMPP/MAMP
+
+MongoDB PHP extension installed
+
+Installation & Setup (Server)
+
+Clone the repository to /var/www/html/
+
+Navigate to project folder: foodmanagementsystem-v2/foodmanagementsystem
+
+Install dependencies using composer install (do not run composer update on server unless necessary)
+
+Set file permissions:
+
+Directories: 755
+
+Files: 644
+
+Owner: www-data
+
+Apache Configuration
+
+Ensure DocumentRoot points to the public folder.
+
+Enable .htaccess support with sudo a2enmod rewrite and restart Apache.
+
+MongoDB Configuration
+
+The connection is set in config.php. Replace <username>, <password>, and <cluster> with your MongoDB Atlas credentials.
+
+Running the Application
+
+Open in a browser using your server IP or domain. If you encounter HTTP 500 errors, check Apache logs.
+
+Running Locally (Windows / Mac)
+
+Install XAMPP or MAMP.
+
+Copy the foodmanagementsystem folder to htdocs.
+
+Start Apache and MySQL.
+
+Update hosttype.php for local URL detection.
+
+Ensure MongoDB PHP extension is enabled.
+
+Open in browser: http://localhost/foodmanagementsystem/public/
+
+Updating the Project
+
+Pull changes from GitHub using git pull origin main. Only run composer install if composer.json has new dependencies. Avoid composer update on the server.
+
+Development Workflow
+
+Edit files locally using VSCode.
+
+Commit and push to GitHub.
+
+Pull changes on the server using Git.
+
+Restart Apache if necessary.
+
+Notes
+
+Keep the vendor/ folder intact on the server; do not delete unless dependencies change.
+
+Logs are located in /var/log/apache2/.
+
+Ensure paths in hosttype.php and config.php match the project structure.
+
+Do not edit config.php on the server unless updating credentials or paths.
