@@ -1,21 +1,12 @@
 <?php
 declare(strict_types=1);
 
-// --------------------------
-// Error Reporting
-// --------------------------
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-// --------------------------
-// Start Session
-// --------------------------
 if (session_status() == PHP_SESSION_NONE) session_start();
 
-// --------------------------
-// Load Config & Dependencies
-// --------------------------
 require_once dirname(__DIR__, 2) . '/hosttype.php';
 require_once BASE_PATH . 'config.php';
 require_once BASE_PATH . 'vendor/autoload.php';
@@ -24,15 +15,14 @@ use MongoDB\BSON\ObjectId;
 use MongoDB\Collection;
 
 class TaskController {
-    private Collection $collection; // donor food collection
-    private Collection $requestsCollection; // NGO requests collection
+    private Collection $collection; 
+    private Collection $requestsCollection; 
 
     public function __construct(Collection $collection, ?Collection $requestsCollection = null) {
         $this->collection = $collection;
-        $this->requestsCollection = $requestsCollection ?? $collection; // fallback if not provided
+        $this->requestsCollection = $requestsCollection ?? $collection; 
     }
 
-    // ---------------- Donor CRUD ----------------
     public function shareTask(array $data): ObjectId {
         $insertResult = $this->collection->insertOne([
             'donor_id'      => $_SESSION['user_id'],
@@ -76,7 +66,6 @@ class TaskController {
         return $deleteResult->getDeletedCount() > 0;
     }
 
-    // ---------------- Fetch ----------------
     public function getTasksByUser(int $userId): array {
         return iterator_to_array($this->collection->find(['donor_id' => $userId]));
     }
@@ -94,13 +83,12 @@ class TaskController {
         return iterator_to_array($this->collection->find([]));
     }
 
-    // ---------------- NGO Request ----------------
+    
     public function requestFood(string $foodId): bool {
         if (!$this->requestsCollection) {
             throw new RuntimeException("Requests collection not set");
         }
 
-        // Validate ObjectId
         if (!preg_match('/^[a-f\d]{24}$/i', $foodId)) {
             throw new InvalidArgumentException("Invalid food ID: $foodId");
         }
@@ -108,7 +96,6 @@ class TaskController {
         $foodItem = $this->collection->findOne(['_id' => new ObjectId($foodId)]);
         if (!$foodItem) return false;
 
-        // Check if this NGO already requested this food
         $existing = $this->requestsCollection->findOne([
             'food_id' => $foodItem['_id'],
             'requested_by_id' => $_SESSION['user_id']
@@ -128,7 +115,6 @@ class TaskController {
     }
 }
 
-// ------------------ Handle POST requests ------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_food'])) {
     $taskController = new TaskController($db->food, $db->food_requests);
     $foodId = $_POST['food_id'];

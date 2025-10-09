@@ -1,19 +1,16 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) session_start();
 
-// Define base path if not defined
 if (!defined('BASE_PATH')) {
     define('BASE_PATH', __DIR__ . '/');
 }
 
-// Load hosttype and Composer autoload
 require_once 'hosttype.php';
 require_once BASE_PATH . 'vendor/autoload.php';
 
 use MongoDB\Client;
 use MongoDB\BSON\ObjectId;
 
-// ---------------- MongoDB Singleton ----------------
 class Database {
     private static ?Database $instance = null;
     private $db;
@@ -40,10 +37,8 @@ class Database {
     }
 }
 
-// Global MongoDB instance
 $db = Database::getInstance()->getDB();
 
-// ---------------- App Configuration Singleton ----------------
 class AppConfig {
     private static ?AppConfig $instance = null;
     public array $settings;
@@ -63,5 +58,4 @@ class AppConfig {
     }
 }
 
-// Global app configuration
 $config = AppConfig::getInstance();

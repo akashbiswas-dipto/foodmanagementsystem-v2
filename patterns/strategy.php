@@ -1,19 +1,6 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Task Strategy Pattern
- * ---------------------
- * Provides interchangeable sorting strategies for tasks.
- * Usage example:
- * 
- *   $controller = new TaskController();
- *   $controller->setStrategy(new SortByPriority());
- *   $sortedTasks = $controller->execute($tasks);
- */
-
-// Base interface for all task strategies
-
 
 if (!interface_exists('TaskStrategy')) {
 interface TaskStrategy {
@@ -25,13 +12,7 @@ interface TaskStrategy {
     public function execute(array $tasks): array;
 }
 
-// ------------------------------------------------------
-// Concrete Strategies
-// ------------------------------------------------------
 
-/**
- * Sort tasks by date in ascending order (earliest first)
- */
 class SortByDate implements TaskStrategy {
     public function execute(array $tasks): array {
         usort($tasks, static fn($a, $b) =>
@@ -41,9 +22,6 @@ class SortByDate implements TaskStrategy {
     }
 }
 
-/**
- * Sort tasks by priority in descending order (highest first)
- */
 class SortByPriority implements TaskStrategy {
     public function execute(array $tasks): array {
         usort($tasks, static fn($a, $b) =>
@@ -53,9 +31,6 @@ class SortByPriority implements TaskStrategy {
     }
 }
 
-/**
- * Sort tasks by title alphabetically (optional)
- */
 class SortByTitle implements TaskStrategy {
     public function execute(array $tasks): array {
         usort($tasks, static fn($a, $b) =>

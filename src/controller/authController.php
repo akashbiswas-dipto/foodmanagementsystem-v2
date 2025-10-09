@@ -7,7 +7,6 @@ use MongoDB\BSON\ObjectId;
 
 session_start();
 
-// ---------------- SIGNUP ----------------
 if (isset($_POST['signup'])) {
     $name     = $_POST['name'] ?? '';
     $phone    = $_POST['phone'] ?? '';
@@ -48,7 +47,6 @@ if (isset($_POST['signup'])) {
     }
 }
 
-// ---------------- LOGIN ----------------
 if (isset($_POST['login'])) {
     $email    = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -83,7 +81,6 @@ if (isset($_POST['login'])) {
     }
 }
 
-// ---------------- LOGOUT ----------------
 if (isset($_GET['logout']) && $_GET['logout'] === 'logout') {
     session_unset();
     session_destroy();

@@ -27,7 +27,6 @@ class NotifierSubject {
     }
 }
 
-// Simple logger observer
 class LogObserver implements ObserverInterface {
     public function update(string $message): void {
         error_log("[Notifier] " . $message);
