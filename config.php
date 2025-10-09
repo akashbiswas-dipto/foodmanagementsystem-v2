@@ -1,33 +1,74 @@
 <?php
-declare(strict_types=1);
-
 if (session_status() == PHP_SESSION_NONE) session_start();
 
-// Detect base folder dynamically
-$scriptPath = str_replace('\\', '/', __DIR__); // handle Windows path
-if (strpos($scriptPath, 'foodmanagementsystem-v2') !== false) {
-    // EC2 server path
+// Define base path only once
+if (!defined('BASE_PATH')) {
     define('BASE_PATH', __DIR__ . '/');
-    define('BASE_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') 
-        . $_SERVER['HTTP_HOST'] . '/foodmanagementsystem-v2/foodmanagementsystem/');
-} else {
-    // Local XAMPP/MAMP path
-    define('BASE_PATH', __DIR__ . '/');
-    define('BASE_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') 
-        . $_SERVER['HTTP_HOST'] . '/foodmanagementsystem/');
 }
 
-// Load dependencies
-require_once BASE_PATH . 'hosttype.php';
+// Load Composer autoloader
 require_once BASE_PATH . 'vendor/autoload.php';
 
-// MongoDB connection
-use MongoDB\Client;
-
-try {
-    $mongoUri = 'mongodb+srv://<username>:<password>@<cluster>.mongodb.net/foodmanagement?retryWrites=true&w=majority';
-    $client = new Client($mongoUri);
-    $db = $client->foodmanagement;
-} catch (\MongoDB\Driver\Exception\Exception $e) {
-    die("MongoDB Connection Failed: " . $e->getMessage());
+// Load environment variables from .env if available
+if (file_exists(BASE_PATH . '.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
+    $dotenv->load();
 }
+
+use MongoDB\Client;
+use MongoDB\BSON\ObjectId;
+
+class Database {
+    private static ?Database $instance = null;
+    private $db;
+
+    private function __construct() {
+        // Get MongoDB URI from environment variable or fallback
+        $uri = $_ENV['MONGO_URI'] ?? getenv('MONGO_URI') ?? 
+               'mongodb+srv://n12371661:n12371661admin@foodmanagement.jrd7lmt.mongodb.net/foodmanagement?retryWrites=true&w=majority';
+
+        try {
+            $client = new Client($uri);
+            $this->db = $client->foodmanagement; // Database name
+        } catch (\MongoDB\Driver\Exception\Exception $e) {
+            die("MongoDB Connection Failed: " . $e->getMessage());
+        }
+    }
+
+    public static function getInstance(): Database {
+        if (!self::$instance) {
+            self::$instance = new Database();
+        }
+        return self::$instance;
+    }
+
+    public function getDB() {
+        return $this->db;
+    }
+}
+
+$db = Database::getInstance()->getDB();
+
+class AppConfig {
+    private static ?AppConfig $instance = null;
+    public array $settings;
+
+    private function __construct() {
+        $this->settings = [
+            'app_name' => 'FoodManagementSystem',
+            'mongodb_uri' => $_ENV['MONGO_URI'] ?? getenv('MONGO_URI') ?? 
+                             'mongodb+srv://n12371661:n12371661admin@foodmanagement.jrd7lmt.mongodb.net/foodmanagement',
+            'jwt_secret' => $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET') ?? 'default_secret',
+            'port' => $_ENV['PORT'] ?? getenv('PORT') ?? '5001'
+        ];
+    }
+
+    public static function getInstance(): AppConfig {
+        if (!self::$instance) {
+            self::$instance = new AppConfig();
+        }
+        return self::$instance;
+    }
+}
+
+$config = AppConfig::getInstance();
