@@ -28,8 +28,8 @@ include_once(BASE_PATH . 'public/navbar.php');
     <div class="container">
         <h1>Welcome to Food Waste Management System</h1>
         <p>Reduce food waste. Share meals. Help the community.</p>
-        <a href="<?php echo $base_url;?>public/login.php" class="btn btn-light btn-lg mx-2">Login</a>
-        <a href="<?php echo $base_url;?>public/signup.php" class="btn btn-outline-light btn-lg mx-2">Sign Up</a>
+        <a href="<?= BASE_URL ?>public/login.php" class="btn btn-light btn-lg mx-2">Login</a>
+        <a href="<?= BASE_URL ?>public/signup.php" class="btn btn-outline-light btn-lg mx-2">Sign Up</a>
     </div>
 </section>
 
