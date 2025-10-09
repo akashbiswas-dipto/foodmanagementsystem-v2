@@ -1,5 +1,6 @@
 <?php 
 // Include config to get $base_url and BASE_PATH
+require_once 'hosttype.php';
 include_once('config.php'); 
 
 // Include navbar from public folder
@@ -16,14 +17,13 @@ include_once(BASE_PATH . 'public/navbar.php');
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Custom CSS -->
-<link rel="stylesheet" type="text/css" href="<?php echo $base_url;?>public/css/index.css">
+<link rel="stylesheet" type="text/css" href="<?= BASE_URL."public/css/index.css"; ?>">
 
 <!-- Optional: Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
 
-<!-- Hero Section -->
 <section class="hero text-center p-5 bg-success text-white">
     <div class="container">
         <h1>Welcome to Food Waste Management System</h1>
@@ -33,7 +33,6 @@ include_once(BASE_PATH . 'public/navbar.php');
     </div>
 </section>
 
-<!-- Features Section -->
 <section class="features container text-center my-5">
     <h2 class="mb-5">Our Features</h2>
     <div class="row justify-content-center">
@@ -54,12 +53,10 @@ include_once(BASE_PATH . 'public/navbar.php');
     </div>
 </section>
 
-<!-- Footer -->
 <footer class="text-center py-4 bg-light">
     <p>&copy; <?php echo date("Y"); ?> Food Waste Management System. All Rights Reserved.</p>
 </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

@@ -1,38 +1,35 @@
 <?php
-interface Observer { 
-    public function update($message); 
-}
-interface Subject {
-    public function attach(Observer $observer);
-    public function detach(Observer $observer);
-    public function notify();
+declare(strict_types=1);
+
+namespace AppObservers;
+
+interface ObserverInterface {
+    public function update(string $message): void;
 }
 
-class FoodSubject implements Subject {
-    private $observers = [];
-    private $message;
-    public function attach(Observer $observer) { 
-        $this->observers[] = $observer; 
+class NotifierSubject {
+    private array $observers = [];
+
+    public function attach(ObserverInterface $obs): void {
+        $this->observers[] = $obs;
     }
-    public function detach(Observer $observer) { 
-        $index = array_search($observer, $this->observers); 
-        if($index!==false) unset($this->observers[$index]); 
+
+    public function detach(ObserverInterface $obs): void {
+        foreach ($this->observers as $i => $o) {
+            if ($o === $obs) unset($this->observers[$i]);
+        }
     }
-    public function setMessage($message) { 
-        $this->message = $message; $this->notify(); 
-    }
-    public function notify() { 
-        foreach($this->observers as $obs) $obs->update($this->message); 
+
+    public function notifyAll(string $msg): void {
+        foreach ($this->observers as $obs) {
+            $obs->update($msg);
+        }
     }
 }
 
-class NGOObserver implements Observer { 
-    public function update($message) { 
-        echo "NGO Notification: $message<br>"; 
-    } 
-}
-class DonorObserver implements Observer { 
-    public function update($message) { 
-        echo "Donor Notification: $message<br>"; 
-    } 
+// Simple logger observer
+class LogObserver implements ObserverInterface {
+    public function update(string $message): void {
+        error_log("[Notifier] " . $message);
+    }
 }

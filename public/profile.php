@@ -3,21 +3,14 @@ use MongoDB\BSON\ObjectId;
 
 session_start();
 
-// Base URL & Path
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
-    $base_url = "http://localhost/foodmanagementsystem/"; 
-    if (!defined("BASE_PATH")) define("BASE_PATH", $_SERVER['DOCUMENT_ROOT']."/foodmanagementsystem/");
-} else {
-    $base_url = "https://mop-zilla.com/"; 
-    if (!defined("BASE_PATH")) define("BASE_PATH", $_SERVER['DOCUMENT_ROOT']."/");
-}
+require_once __DIR__ . '/../hosttype.php';
 
 // Require config for MongoDB connection
 require_once BASE_PATH . 'config.php';
 
 // Redirect if not logged in
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
-    header("Location: ".$base_url."public/login.php");
+    header("Location: ".BASE_URL."public/login.php");
     exit();
 }
 
@@ -60,7 +53,7 @@ $role = $roleNames[$user['role']] ?? "Unknown";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - <?= htmlspecialchars($user['name']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="<?= $base_url ?>public/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL."public/css/dashboard.css"; ?>">
 </head>
 <body>
 <div class="box">

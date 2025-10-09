@@ -1,65 +1,74 @@
 <?php
-use MongoDB\BSON\ObjectId;
+declare(strict_types=1);
 
-interface FoodInterface {
-    public function showFood();
-}
+require_once BASE_PATH . 'src/controller/taskController.php';
 
-class RealFood implements FoodInterface {
-    private $food;
-    public function __construct($food) {  // remove "array" type
-        $this->food = $food;
-    }
-    public function showFood() { 
-        return (array)$this->food; // optionally cast to array
-    }
-}
+class TaskProxy {
+    private TaskController $controller;
+    private ?int $role;
 
-
-class FoodProxy {
-    private $foodId;
-    private $role;
-    private $userId;
-    private $db;
-    private $realFood;
-
-    public function __construct($foodId, $role, $userId, $db) {
-        $this->foodId = $foodId;
+    public function __construct(TaskController $controller, ?int $role = null) {
+        $this->controller = $controller;
         $this->role = $role;
-        $this->userId = $userId;
-        $this->db = $db;
     }
 
-    // Fetch food with access control
-    public function getFood() {
-        $filter = ['_id' => new ObjectId($this->foodId)];
-
-        // Admin can access everything
-       if (!in_array($this->role, [1,2,3])) {
-            return null; // Access denied
+    /**
+     * Ensure the current role is allowed to perform an action
+     *
+     * @param array<int> $allowedRoles
+     * @throws RuntimeException
+     */
+    private function ensureRole(array $allowedRoles): void {
+        if (!in_array($this->role, $allowedRoles, true)) {
+            throw new RuntimeException("Permission denied for role {$this->role}");
         }
-
-        // Donor can only access their own food
-        if ($this->role == 2) { 
-            $filter['donor_id'] = $this->userId;
-        }
-
-
-        $food = $this->db->food->findOne($filter);
-        if (!$food) return null;
-
-        if (!$this->realFood) {
-            $this->realFood = new RealFood($food);
-        }
-
-        return $this->realFood->showFood();
     }
 
-    // New method to match your previous code
-    public function showFood() {
-    $food = $this->getFood();
-    return $food ? htmlspecialchars($food['food_item']) : "Access Denied / Deleted";
+    /**
+     * Share a new task (donor only)
+     */
+    public function shareTask(array $data): string {
+        $this->ensureRole([1, 2]); // roles 1 & 2 = donors
+        return (string) $this->controller->shareTask($data);
+    }
+
+    /**
+     * Update an existing task (donor only)
+     */
+    public function updateTask(array $data): bool {
+        $this->ensureRole([1, 2]);
+        return $this->controller->updateTask($data);
+    }
+
+    /**
+     * Delete a task (donor only)
+     */
+    public function deleteTask(string $taskId): bool {
+        $this->ensureRole([1, 2]);
+        return $this->controller->deleteTask($taskId);
+    }
+
+    /**
+     * Request a task (NGO only)
+     */
+    public function requestTask(string $taskId): bool {
+        $this->ensureRole([3]); // role 3 = NGO
+        return $this->controller->requestTask($taskId);
+    }
+
+    /**
+     * Approve a task request (donor only)
+     */
+    public function approveTaskRequest(string $requestId): bool {
+        $this->ensureRole([1, 2]);
+        return $this->controller->approveTaskRequest($requestId);
+    }
+
+    /**
+     * Decline a task request (donor only)
+     */
+    public function declineTaskRequest(string $requestId): bool {
+        $this->ensureRole([1, 2]);
+        return $this->controller->declineTaskRequest($requestId);
     }
 }
-
-
