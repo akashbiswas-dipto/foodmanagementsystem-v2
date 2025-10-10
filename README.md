@@ -1,145 +1,200 @@
-FoodManagementSystem
+# FoodManagementSystem
 
-FoodManagementSystem is a PHP-based web application for managing food-related operations, using MongoDB as the database. The system is designed to run on Ubuntu servers with Apache2 and PHP 8+, but can also run locally on Windows or Mac using XAMPP or MAMP.
+FoodManagementSystem is a **PHP-based web application** designed for efficient management of food-related operations. It uses **MongoDB** as its database, allowing for streamlined **CRUD (Create, Read, Update, Delete) operations** within a structured environment.
 
-Table of Contents
+## 🌟 Technologies Used
 
-Project Overview
+| Category | Technology | Version / Notes |
+| :--- | :--- | :--- |
+| **Backend** | PHP | 8+ |
+| **Database** | MongoDB | Atlas (Cloud or Local) |
+| **Server** | Apache2 | Required for deployment |
+| **Dependency Management** | Composer | Used for PHP package management |
+| **Version Control** | Git & GitHub | For source code management |
 
-Technologies Used
+## 📁 Project Structure
 
-Project Structure
+├── foodmanagementsystem/
+│ ├── public/     
+│ ├── api/
+│ ├── patterns/         # Web entry point (index.php) and assets
+│ ├── src/              # Controllers, models, and business logic
+│ ├── vendor/           # Composer dependencies
+│ ├── config.php        # Application configuration & MongoDB connection settings
+│ └── hosttype.php      # BASE_URL and BASE_PATH definitions for environment detection
+│ ├── README.md          # This file
+│ └── .gitignore
 
-Prerequisites
+Here is a complete, working `README.md` file based on the provided project documentation.
 
-Installation & Setup (Server)
+```markdown
+# FoodManagementSystem
 
-Apache Configuration
+FoodManagementSystem is a **PHP-based web application** designed for efficient management of food-related operations. It uses **MongoDB** as its database, allowing for streamlined **CRUD (Create, Read, Update, Delete) operations** within a structured environment.
 
-MongoDB Configuration
+## 🌟 Technologies Used
 
-Running the Application
+| Category | Technology | Version / Notes |
+| :--- | :--- | :--- |
+| **Backend** | PHP | 8+ |
+| **Database** | MongoDB | Atlas (Cloud or Local) |
+| **Server** | Apache2 | Required for deployment |
+| **Dependency Management** | Composer | Used for PHP package management |
+| **Version Control** | Git & GitHub | For source code management |
 
-Running Locally (Windows / Mac)
+## 📁 Project Structure
 
-Updating the Project
-
-Development Workflow
-
-Notes
-
-Project Overview
-
-The FoodManagementSystem is a web platform for managing food operations. It allows CRUD operations with MongoDB and provides a structured environment for managing food data efficiently.
-
-Technologies Used
-
-Backend: PHP 8+
-
-Database: MongoDB (Atlas)
-
-Server: Apache2
-
-Dependency Management: Composer
-
-Version Control: Git & GitHub
-
-Project Structure
+```
 
 foodmanagementsystem-v2/
 ├── foodmanagementsystem/
-│ ├── public/ - Web entry point (index.php)
-│ ├── src/ - Controllers, models, and business logic
-│ ├── vendor/ - Composer dependencies
-│ ├── config.php - App config & DB connection
-│ └── hosttype.php - BASE_URL and BASE_PATH definitions
-├── README.txt
+│ ├── public/           \# Web entry point (index.php) and assets
+│ ├── src/              \# Controllers, models, and business logic
+│ ├── vendor/           \# Composer dependencies
+│ ├── config.php        \# Application configuration & MongoDB connection settings
+│ └── hosttype.php      \# BASE\_URL and BASE\_PATH definitions for environment detection
+├── README.md           \# This file
 └── .gitignore
 
-Prerequisites
+````
 
-Server:
+---
 
-Ubuntu 20.04+ with Apache2
+## ⚙️ Prerequisites
 
-PHP 8+ with mongodb, curl, json, mbstring extensions
+### Server Deployment
 
-Composer installed
+* **Operating System:** Ubuntu 20.04+
+* **Web Server:** Apache2
+* **PHP:** Version 8+ with the following extensions:
+    * `mongodb`
+    * `curl`
+    * `json`
+    * `mbstring`
+* **Tools:** Composer and Git installed.
+* **Database:** MongoDB Atlas account and credentials.
 
-Database: MongoDB Atlas account and credentials
+### Local Development (Windows / Mac)
 
-Local Development (optional):
+* **Software Stack:** XAMPP (Windows) or MAMP (Mac) installed.
+* **PHP:** Version 8+ included in XAMPP/MAMP.
+* **Database:** MongoDB PHP extension enabled/installed in the local PHP environment.
 
-XAMPP (Windows) or MAMP (Mac)
+---
 
-PHP 8+ included in XAMPP/MAMP
+## 🚀 Installation & Setup
 
-MongoDB PHP extension installed
+### A. Server Deployment (Ubuntu / Apache2)
 
-Installation & Setup (Server)
+1.  **Clone the Repository:**
+    Clone the project into your web root directory, typically `/var/www/html/`.
 
-Clone the repository to /var/www/html/
+    ```bash
+    cd /var/www/html/
+    git clone <repository-url> foodmanagementsystem-v2
+    cd foodmanagementsystem-v2/foodmanagementsystem
+    ```
 
-Navigate to project folder: foodmanagementsystem-v2/foodmanagementsystem
+2.  **Install Dependencies:**
+    Navigate to the `foodmanagementsystem` directory and install the required dependencies.
 
-Install dependencies using composer install (do not run composer update on server unless necessary)
+    ```bash
+    composer install
+    # NOTE: Do NOT run 'composer update' on the server unless strictly necessary.
+    ```
 
-Set file permissions:
+3.  **Set File Permissions:**
+    Set the correct permissions and ownership for the Apache user (`www-data`).
 
-Directories: 755
+    ```bash
+    # Directories
+    find . -type d -exec chmod 755 {} \;
+    # Files
+    find . -type f -exec chmod 644 {} \;
+    # Owner
+    sudo chown -R www-data:www-data /var/www/html/foodmanagementsystem-v2
+    ```
 
-Files: 644
+4.  **Apache Configuration:**
+    * Ensure your **DocumentRoot** is configured to point to the `public/` folder within the project.
+    * Enable the Apache `rewrite` module for `.htaccess` support and restart the service:
 
-Owner: www-data
+        ```bash
+        sudo a2enmod rewrite
+        sudo systemctl restart apache2
+        ```
 
-Apache Configuration
+5.  **MongoDB Configuration:**
+    Edit the **`config.php`** file and replace the placeholder credentials with your actual MongoDB Atlas connection details:
 
-Ensure DocumentRoot points to the public folder.
+    ```php
+    // Example inside config.php
+    $mongo_uri = "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/...";
+    // Replace <username>, <password>, and <cluster> with your details.
+    ```
 
-Enable .htaccess support with sudo a2enmod rewrite and restart Apache.
+6.  **Running the Application:**
+    Open your server's IP address or domain name in a web browser. If you encounter an **HTTP 500 error**, check the Apache logs located in `/var/log/apache2/`.
 
-MongoDB Configuration
+---
 
-The connection is set in config.php. Replace <username>, <password>, and <cluster> with your MongoDB Atlas credentials.
+### B. Local Development (Windows / Mac)
 
-Running the Application
+1.  **Installation:**
+    Install and launch **XAMPP** (Windows) or **MAMP** (Mac).
 
-Open in a browser using your server IP or domain. If you encounter HTTP 500 errors, check Apache logs.
+2.  **Move Project Folder:**
+    Copy the `foodmanagementsystem` folder to your local server's web root directory (e.g., `htdocs` for XAMPP).
 
-Running Locally (Windows / Mac)
+3.  **Start Services:**
+    Start **Apache** (and **MySQL**, though it's not the primary database, it's often started with the stack).
 
-Install XAMPP or MAMP.
+4.  **MongoDB Extension:**
+    Ensure the **MongoDB PHP extension** is properly enabled in your local PHP configuration (`php.ini`).
 
-Copy the foodmanagementsystem folder to htdocs.
+5.  **Configure Local URL:**
+    Update the **`hosttype.php`** file to correctly detect and use the local URL structure.
 
-Start Apache and MySQL.
+6.  **Access:**
+    Open the application in your browser:
+    `http://localhost/foodmanagementsystem/public/`
 
-Update hosttype.php for local URL detection.
+---
 
-Ensure MongoDB PHP extension is enabled.
+## 🔄 Updating the Project
 
-Open in browser: http://localhost/foodmanagementsystem/public/
+When updating the project on the server:
 
-Updating the Project
+1.  **Pull Changes:**
+    ```bash
+    cd /path/to/foodmanagementsystem-v2/foodmanagementsystem
+    git pull origin main
+    ```
 
-Pull changes from GitHub using git pull origin main. Only run composer install if composer.json has new dependencies. Avoid composer update on the server.
+2.  **Update Dependencies (if needed):**
+    Only run `composer install` if the `composer.json` file has new dependencies. **Avoid running `composer update` on the production server.**
 
-Development Workflow
+3.  **Restart Apache:**
+    If changes involve core configurations or business logic, a restart is often a good practice.
+    ```bash
+    sudo systemctl restart apache2
+    ```
 
-Edit files locally using VSCode.
+---
 
-Commit and push to GitHub.
+## 💡 Development Workflow
 
-Pull changes on the server using Git.
+1.  Edit files locally using your preferred IDE (e.g., VSCode).
+2.  Commit changes and push to your GitHub repository.
+3.  Pull the changes onto the server using `git pull`.
+4.  Restart Apache if necessary.
 
-Restart Apache if necessary.
+---
 
-Notes
+## 📝 Notes & Troubleshooting
 
-Keep the vendor/ folder intact on the server; do not delete unless dependencies change.
-
-Logs are located in /var/log/apache2/.
-
-Ensure paths in hosttype.php and config.php match the project structure.
-
-Do not edit config.php on the server unless updating credentials or paths.
+* **Vendor Folder:** Keep the `vendor/` folder intact on the server. Do not delete it unless you are explicitly managing dependency changes via Composer.
+* **Logging:** Server logs for Apache are located in `/var/log/apache2/`.
+* **Configuration:** Ensure all paths defined in `hosttype.php` and `config.php` accurately reflect the project structure and server environment.
+* **Credentials:** Avoid editing `config.php` directly on the server unless you are specifically updating database credentials or core application paths.
+````

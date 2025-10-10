@@ -4,7 +4,6 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../hosttype.php';
-
 require_once BASE_PATH . 'config.php';
 require_once BASE_PATH . 'vendor/autoload.php';
 
