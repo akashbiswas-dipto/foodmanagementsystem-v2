@@ -9,8 +9,8 @@ if (!defined('BASE_PATH')) {
 // Load Composer autoloader
 require_once BASE_PATH . 'vendor/autoload.php';
 
-// Load environment variables from .env if available
 if (file_exists(BASE_PATH . '.env')) {
+    // NOTE: This assumes you have run 'composer require vlucas/phpdotenv'
     $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
     $dotenv->load();
 }
